@@ -1,16 +1,10 @@
 const Banner = require('../models/Banner');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
-const { cacheData, getCachedData } = require('../config/redis');
+
 
 exports.getBanners = catchAsync(async (req, res, next) => {
   const { position } = req.query;
-
-  const cacheKey = `banners:${position || 'all'}`;
-  const cachedData = await getCachedData(cacheKey);
-  if (cachedData) {
-    return res.status(200).json({ success: true, data: cachedData });
-  }
 
   const filter = { isActive: true };
   if (position) {
@@ -20,8 +14,6 @@ exports.getBanners = catchAsync(async (req, res, next) => {
   const banners = await Banner.find(filter)
     .sort({ position: 1, order: 1 })
     .lean();
-
-  await cacheData(cacheKey, { banners }, 600);
 
   res.status(200).json({
     success: true,
@@ -48,8 +40,6 @@ exports.createBanner = catchAsync(async (req, res, next) => {
     order: order || 0,
     isActive: isActive !== undefined ? isActive : true,
   });
-
-  await clearBannerCache();
 
   res.status(201).json({
     success: true,
@@ -79,8 +69,6 @@ exports.updateBanner = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
-  await clearBannerCache();
-
   res.status(200).json({
     success: true,
     message: 'Banner updated successfully',
@@ -97,19 +85,8 @@ exports.deleteBanner = catchAsync(async (req, res, next) => {
 
   await Banner.findByIdAndDelete(req.params.id);
 
-  await clearBannerCache();
-
   res.status(200).json({
     success: true,
     message: 'Banner deleted successfully',
   });
 });
-
-const clearBannerCache = async () => {
-  try {
-    const { clearCache } = require('../config/redis');
-    await clearCache('banners:*');
-  } catch (error) {
-    console.error('Failed to clear banner cache:', error.message);
-  }
-};

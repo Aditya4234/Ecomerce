@@ -3,7 +3,7 @@ const Review = require('../models/Review');
 const Category = require('../models/Category');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
-const { cacheData, getCachedData, clearCache } = require('../config/redis');
+
 
 exports.getProducts = catchAsync(async (req, res, next) => {
   const {
@@ -64,12 +64,6 @@ exports.getProducts = catchAsync(async (req, res, next) => {
     filter.$text = { $search: search };
   }
 
-  const cacheKey = `products:${JSON.stringify({ ...filter, sort, page: pageNum, limit: limitNum })}`;
-  const cachedData = await getCachedData(cacheKey);
-  if (cachedData) {
-    return res.status(200).json({ success: true, ...cachedData });
-  }
-
   let sortOption = {};
   switch (sort) {
     case 'price_asc':
@@ -117,8 +111,6 @@ exports.getProducts = catchAsync(async (req, res, next) => {
       hasPrevPage: pageNum > 1,
     },
   };
-
-  await cacheData(cacheKey, responseData, 300);
 
   res.status(200).json({ success: true, ...responseData });
 });
@@ -171,8 +163,6 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     images,
   });
 
-  await clearCache('products:*');
-
   res.status(201).json({
     success: true,
     message: 'Product created successfully',
@@ -202,8 +192,6 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
     runValidators: true,
   }).populate('category', 'name slug');
 
-  await clearCache('products:*');
-
   res.status(200).json({
     success: true,
     message: 'Product updated successfully',
@@ -221,8 +209,6 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   product.isActive = false;
   await product.save();
 
-  await clearCache('products:*');
-
   res.status(200).json({
     success: true,
     message: 'Product deleted successfully',
@@ -230,19 +216,11 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.getFeaturedProducts = catchAsync(async (req, res, next) => {
-  const cacheKey = 'products:featured';
-  const cachedData = await getCachedData(cacheKey);
-  if (cachedData) {
-    return res.status(200).json({ success: true, data: cachedData });
-  }
-
   const products = await Product.find({ featured: true, isActive: true })
     .populate('category', 'name slug')
     .sort({ createdAt: -1 })
     .limit(8)
     .lean();
-
-  await cacheData(cacheKey, { products }, 600);
 
   res.status(200).json({
     success: true,

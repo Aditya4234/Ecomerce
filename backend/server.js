@@ -10,7 +10,6 @@ const path = require('path');
 dotenv.config();
 
 const connectDB = require('./src/config/db');
-const { connectRedis } = require('./src/config/redis');
 const { configureCloudinary } = require('./src/config/cloudinary');
 const { configureRazorpay } = require('./src/config/razorpay');
 const errorHandler = require('./src/middleware/errorHandler');
@@ -99,7 +98,6 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    await connectRedis();
 
     const server = app.listen(PORT, () => {
       console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
