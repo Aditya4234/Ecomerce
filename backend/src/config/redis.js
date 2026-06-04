@@ -10,12 +10,13 @@ const connectRedis = async () => {
   }
 
   try {
-    redisClient = redis.createClient({ url });
+    redisClient = redis.createClient({
+      url,
+      socket: { reconnectStrategy: false },
+    });
 
     redisClient.on('error', (err) => {
-      console.error('Redis Client Error:', err.message);
-      redisClient.quit();
-      redisClient = null;
+      console.error('Redis Client Error:', err.message || err);
     });
 
     redisClient.on('connect', () => {
