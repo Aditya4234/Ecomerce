@@ -108,9 +108,9 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h4 className="mb-4 text-lg font-bold text-zinc-900 dark:text-zinc-100">
+            <Link href="/" className="mb-4 text-lg font-bold text-zinc-900 dark:text-zinc-100 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors block">
               ShopVerse
-            </h4>
+            </Link>
             <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
               Your premium destination for quality products. We offer the best
               selection with competitive prices and fast delivery worldwide.
