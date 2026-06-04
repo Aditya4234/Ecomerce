@@ -24,6 +24,7 @@ const paymentRoutes = require('./src/routes/payments');
 const couponRoutes = require('./src/routes/coupons');
 const bannerRoutes = require('./src/routes/banners');
 const adminRoutes = require('./src/routes/admin');
+const notificationRoutes = require('./src/routes/notifications');
 
 const app = express();
 
@@ -79,6 +80,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/', (req, res) => {
   res.redirect('/api/health');

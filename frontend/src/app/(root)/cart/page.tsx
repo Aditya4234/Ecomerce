@@ -25,6 +25,7 @@ import {
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useValidateCouponMutation } from "@/store/api/apiSlice";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -33,14 +34,35 @@ export default function CartPage() {
   );
   const [couponCode, setCouponCode] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [validateCoupon] = useValidateCouponMutation();
 
-  const handleApplyCoupon = () => {
+  const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
     setCouponLoading(true);
-    setTimeout(() => {
-      dispatch(applyCoupon({ code: couponCode, discount: 500 }));
+    setCouponError("");
+    try {
+      const subtotal = items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      const result = await validateCoupon({
+        code: couponCode,
+        cartTotal: subtotal,
+      }).unwrap();
+      dispatch(
+        applyCoupon({
+          code: couponCode,
+          discount: result.data.discountAmount,
+        })
+      );
+    } catch (err: any) {
+      setCouponError(
+        err?.data?.message || "Invalid or expired coupon code"
+      );
+    } finally {
       setCouponLoading(false);
-    }, 1000);
+    }
   };
 
   const subtotal = items.reduce(
@@ -267,9 +289,15 @@ export default function CartPage() {
                     Apply
                   </Button>
                 </div>
+                {couponError && (
+                  <p className="mt-1.5 text-xs text-destructive">{couponError}</p>
+                )}
                 {coupon && (
                   <button
-                    onClick={() => dispatch(removeCoupon())}
+                    onClick={() => {
+                      dispatch(removeCoupon());
+                      setCouponError("");
+                    }}
                     className="flex items-center gap-1 mt-2 text-xs text-destructive hover:text-destructive/80"
                   >
                     <X className="w-3 h-3" />

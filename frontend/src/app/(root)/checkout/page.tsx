@@ -146,13 +146,18 @@ export default function CheckoutPage() {
             razorpay_payment_id: string;
             razorpay_signature: string;
           }) => {
-            await verifyPayment({
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            }).unwrap();
-            dispatch(clearCart());
-            router.push(`/order-success?id=${orderResponse.data._id}`);
+            try {
+              await verifyPayment({
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              }).unwrap();
+              dispatch(clearCart());
+              router.push(`/order-success?id=${orderResponse.data._id}`);
+            } catch {
+              setError("Payment verification failed. Please contact support.");
+              setPlacing(false);
+            }
           },
           modal: {
             ondismiss: () => {

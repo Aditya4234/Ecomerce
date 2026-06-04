@@ -23,7 +23,7 @@ export interface Product {
   sizes?: string[]
   colors?: string[]
   stock: number
-  isFeatured: boolean
+  featured: boolean
   isActive: boolean
   averageRating: number
   numReviews: number

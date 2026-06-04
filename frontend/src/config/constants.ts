@@ -7,10 +7,10 @@ export const SITE_DESCRIPTION =
 
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Shop", href: "/shop" },
+  { label: "Shop", href: "/products" },
   { label: "Categories", href: "/categories" },
-  { label: "New Arrivals", href: "/shop?sortBy=newest" },
-  { label: "Deals", href: "/shop?sortBy=discount" },
+  { label: "New Arrivals", href: "/products?sortBy=newest" },
+  { label: "Deals", href: "/products?sortBy=discount" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const

@@ -557,10 +557,10 @@ export const apiSlice = createApi({
     }),
 
     validateCoupon: builder.mutation<
-      ApiResponse<{ valid: boolean; discount: number; coupon: Coupon }>,
-      { code: string; orderValue: number }
+      ApiResponse<{ discountAmount: number; coupon: Coupon }>,
+      { code: string; cartTotal: number }
     >({
-      query: (body) => ({ url: "/coupons/validate", method: "POST", body }),
+      query: (params) => ({ url: "/coupons/validate", method: "GET", params }),
     }),
 
     // ─── Banners ───────────────────────────────────────────────────
