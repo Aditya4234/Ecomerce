@@ -79,6 +79,10 @@ app.get('/', (req, res) => {
   res.redirect('/api/health');
 });
 
+app.get('/api', (req, res) => {
+  res.redirect('/api/health');
+});
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
