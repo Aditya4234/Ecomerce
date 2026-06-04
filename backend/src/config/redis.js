@@ -3,13 +3,19 @@ const redis = require('redis');
 let redisClient = null;
 
 const connectRedis = async () => {
+  const url = process.env.REDIS_URL;
+  if (!url || url === 'redis://localhost:6379') {
+    console.warn('Redis not configured. Caching disabled.');
+    return null;
+  }
+
   try {
-    redisClient = redis.createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
-    });
+    redisClient = redis.createClient({ url });
 
     redisClient.on('error', (err) => {
       console.error('Redis Client Error:', err.message);
+      redisClient.quit();
+      redisClient = null;
     });
 
     redisClient.on('connect', () => {
@@ -20,6 +26,7 @@ const connectRedis = async () => {
     return redisClient;
   } catch (error) {
     console.error('Redis connection failed. Continuing without Redis cache:', error.message);
+    if (redisClient) redisClient.quit();
     redisClient = null;
     return null;
   }
