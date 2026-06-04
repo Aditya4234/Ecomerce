@@ -69,10 +69,8 @@ export function Navbar() {
     <>
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          scrolled
-            ? 'bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-lg shadow-zinc-900/5'
-            : 'bg-transparent'
+          'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl',
+          scrolled && 'shadow-lg shadow-zinc-900/5'
         )}
       >
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
