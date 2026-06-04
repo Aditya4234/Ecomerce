@@ -1,7 +1,6 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { DealsSection } from "@/components/home/DealsSection";
 import { TrendingProducts } from "@/components/home/TrendingProducts";
 import { Testimonials } from "@/components/home/Testimonials";
 import { BrandsSection } from "@/components/home/BrandsSection";
@@ -14,7 +13,6 @@ export default function HomePage() {
       <HeroSection />
       <FeaturedCategories />
       <FeaturedProducts />
-      <DealsSection />
       <TrendingProducts />
       <Testimonials />
       <BrandsSection />
