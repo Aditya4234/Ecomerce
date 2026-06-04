@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -20,13 +21,24 @@ const itemVariants = {
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-zinc-900 via-emerald-900 to-teal-900">
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Full-page Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/image/logo.png"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-1/2 -right-1/2 h-[600px] w-[600px] rounded-full bg-emerald-500/20 blur-3xl" />
         <div className="absolute -bottom-1/2 -left-1/2 h-[500px] w-[500px] rounded-full bg-teal-500/15 blur-3xl" />
         <div className="absolute top-1/3 left-1/4 h-64 w-64 rounded-full bg-emerald-400/10 blur-2xl" />
-        {/* Grid Pattern */}
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -37,21 +49,13 @@ export function HeroSection() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-20">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="max-w-3xl"
         >
-          <motion.div variants={itemVariants} className="mb-8 flex justify-center lg:justify-start">
-            <img
-              src="/image/logo.png"
-              alt="ShopVerse"
-              className="h-16 sm:h-20 w-auto object-contain"
-            />
-          </motion.div>
-
           <motion.div variants={itemVariants} className="mb-6">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-4 py-2 text-sm text-emerald-200 border border-emerald-400/20">
               <Sparkles className="h-4 w-4" />
