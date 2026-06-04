@@ -6,7 +6,7 @@ const { authorize } = require('../middleware/admin');
 
 router.use(authenticate, authorize('admin'));
 
-router.get('/dashboard', adminController.getDashboardStats);
+router.get('/stats', adminController.getDashboardStats);
 router.get('/revenue', adminController.getRevenueData);
 router.get('/users', adminController.getUsers);
 router.get('/users/:id', adminController.getUser);

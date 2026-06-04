@@ -81,6 +81,9 @@ exports.getProducts = catchAsync(async (req, res, next) => {
     case 'name':
       sortOption = { name: 1 };
       break;
+    case 'popular':
+      sortOption = { numReviews: -1, averageRating: -1 };
+      break;
     default:
       sortOption = { createdAt: -1 };
   }

@@ -6,50 +6,117 @@ const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 
 exports.getDashboardStats = catchAsync(async (req, res, next) => {
+  const now = new Date();
+  const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const endOfLastMonth = startOfThisMonth;
+
   const [
     totalUsers,
     totalProducts,
     totalOrders,
-    totalCategories,
-    revenueResult,
+    usersThisMonth,
+    usersLastMonth,
+    productsThisMonth,
+    productsLastMonth,
+    ordersThisMonth,
+    ordersLastMonth,
+    revenueThisMonth,
+    revenueLastMonth,
     recentOrders,
-    pendingOrders,
+    topProductsAgg,
+    revenueByMonth,
   ] = await Promise.all([
     User.countDocuments({ isActive: true }),
     Product.countDocuments({ isActive: true }),
     Order.countDocuments(),
-    Category.countDocuments({ isActive: true }),
+    User.countDocuments({ createdAt: { $gte: startOfThisMonth } }),
+    User.countDocuments({ createdAt: { $gte: startOfLastMonth, $lt: startOfThisMonth } }),
+    Product.countDocuments({ createdAt: { $gte: startOfThisMonth } }),
+    Product.countDocuments({ createdAt: { $gte: startOfLastMonth, $lt: startOfThisMonth } }),
+    Order.countDocuments({ createdAt: { $gte: startOfThisMonth } }),
+    Order.countDocuments({ createdAt: { $gte: startOfLastMonth, $lt: startOfThisMonth } }),
     Order.aggregate([
-      { $match: { isPaid: true } },
-      { $group: { _id: null, totalRevenue: { $sum: '$totalPrice' } } },
+      { $match: { isPaid: true, paidAt: { $gte: startOfThisMonth } } },
+      { $group: { _id: null, total: { $sum: '$totalPrice' } } },
+    ]),
+    Order.aggregate([
+      { $match: { isPaid: true, paidAt: { $gte: startOfLastMonth, $lt: startOfThisMonth } } },
+      { $group: { _id: null, total: { $sum: '$totalPrice' } } },
     ]),
     Order.find()
       .populate('user', 'name email')
       .sort({ createdAt: -1 })
       .limit(10)
       .lean(),
-    Order.countDocuments({ deliveryStatus: { $in: ['pending', 'processing'] } }),
+    Order.aggregate([
+      { $unwind: '$orderItems' },
+      {
+        $group: {
+          _id: '$orderItems.product',
+          name: { $first: '$orderItems.name' },
+          sales: { $sum: '$orderItems.quantity' },
+          revenue: { $sum: { $multiply: ['$orderItems.quantity', '$orderItems.price'] } },
+        },
+      },
+      { $sort: { sales: -1 } },
+      { $limit: 5 },
+    ]),
+    Order.aggregate([
+      { $match: { isPaid: true } },
+      {
+        $group: {
+          _id: { year: { $year: '$paidAt' }, month: { $month: '$paidAt' } },
+          revenue: { $sum: '$totalPrice' },
+          orders: { $sum: 1 },
+        },
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } },
+      {
+        $project: {
+          _id: 0,
+          month: {
+            $concat: [
+              { $toString: '$_id.year' },
+              '-',
+              {
+                $cond: [
+                  { $lt: ['$_id.month', 10] },
+                  { $concat: ['0', { $toString: '$_id.month' }] },
+                  { $toString: '$_id.month' },
+                ],
+              },
+            ],
+          },
+          revenue: 1,
+          orders: 1,
+        },
+      },
+    ]),
   ]);
 
-  const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+  const totalRevenue = revenueThisMonth.length > 0 ? revenueThisMonth[0].total : 0;
+  const prevRevenue = revenueLastMonth.length > 0 ? revenueLastMonth[0].total : 0;
 
-  const outOfStock = await Product.countDocuments({ stock: 0, isActive: true });
-  const lowStock = await Product.countDocuments({ stock: { $gt: 0, $lte: 10 }, isActive: true });
+  const calcChange = (current, previous) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - previous) / previous) * 100);
+  };
 
   res.status(200).json({
     success: true,
     data: {
-      stats: {
-        totalUsers,
-        totalProducts,
-        totalOrders,
-        totalCategories,
-        totalRevenue: Math.round(totalRevenue * 100) / 100,
-        pendingOrders,
-        outOfStock,
-        lowStock,
-      },
+      totalRevenue: Math.round(totalRevenue * 100) / 100,
+      totalOrders,
+      totalProducts,
+      totalUsers,
+      revenueChange: calcChange(totalRevenue, prevRevenue),
+      ordersChange: calcChange(ordersThisMonth, ordersLastMonth),
+      productsChange: calcChange(productsThisMonth, productsLastMonth),
+      usersChange: calcChange(usersThisMonth, usersLastMonth),
       recentOrders,
+      topProducts: topProductsAgg,
+      revenueByMonth,
     },
   });
 });

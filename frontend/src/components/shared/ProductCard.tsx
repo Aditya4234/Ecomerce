@@ -104,7 +104,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             'absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2 transition-all duration-300',
             isHovered
               ? 'translate-y-0 opacity-100'
-              : 'translate-y-4 opacity-0'
+              : 'translate-y-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:translate-y-4 sm:group-hover:translate-y-0'
           )}
         >
           <Button
@@ -125,13 +125,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
             Add to Cart
           </Button>
           <Button
-            size="icon"
-            variant="ghost"
-            className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-zinc-900"
+            size="sm"
+            variant="secondary"
+            className="bg-emerald-600/90 backdrop-blur-sm text-white hover:bg-emerald-600"
             asChild
           >
             <Link href={`/products/${product.id}`}>
-              <Eye className="h-4 w-4" />
+              Buy Now
             </Link>
           </Button>
         </div>

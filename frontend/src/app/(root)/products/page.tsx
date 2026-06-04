@@ -409,24 +409,35 @@ export default function ProductsPage() {
                             </span>
                           )}
                         </div>
-                        <Button
-                          className="mt-3"
-                          size="sm"
-                          onClick={() =>
-                            dispatch(
-                              addToCart({
-                                product: product._id,
-                                name: product.name,
-                                image: product.images?.[0]?.url ?? "/placeholder.svg",
-                                price: product.price,
-                                stock: product.stock,
-                                quantity: 1,
-                              })
-                            )
-                          }
-                        >
-                          Add to Cart
-                        </Button>
+                        <div className="mt-3 flex gap-2">
+                          <Button
+                            className="flex-1"
+                            size="sm"
+                            onClick={() =>
+                              dispatch(
+                                addToCart({
+                                  product: product._id,
+                                  name: product.name,
+                                  image: product.images?.[0]?.url ?? "/placeholder.svg",
+                                  price: product.price,
+                                  stock: product.stock,
+                                  quantity: 1,
+                                })
+                              )
+                            }
+                          >
+                            Add to Cart
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            asChild
+                          >
+                            <Link href={`/products/${product._id}`}>
+                              Buy Now
+                            </Link>
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </motion.div>

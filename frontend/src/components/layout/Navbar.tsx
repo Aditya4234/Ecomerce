@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useSelector, useDispatch } from 'react-redux'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -19,6 +19,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { SearchBar } from '@/components/ui/search-bar'
+import { SearchModal } from '@/components/layout/SearchModal'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import {
   DropdownMenu,
@@ -45,8 +46,8 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const pathname = usePathname()
+  const router = useRouter()
 
   const dispatch = useDispatch<AppDispatch>()
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth)
@@ -114,7 +115,11 @@ export function Navbar() {
             {/* Right Section */}
             <div className="flex items-center gap-0.5 sm:gap-2">
               <div className="hidden lg:block">
-                <SearchBar />
+                <SearchBar
+                  onSearch={(query) => {
+                    router.push(`/products?search=${encodeURIComponent(query)}`)
+                  }}
+                />
               </div>
 
               {/* Mobile Search */}
@@ -171,7 +176,7 @@ export function Navbar() {
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href="/profile" className="flex items-center gap-2">
+                        <Link href="/dashboard" className="flex items-center gap-2">
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </Link>
@@ -180,6 +185,12 @@ export function Navbar() {
                         <Link href="/orders" className="flex items-center gap-2">
                           <Package className="h-4 w-4" />
                           Orders
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/profile" className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Profile
                         </Link>
                       </DropdownMenuItem>
                       {isAdmin && (
@@ -319,44 +330,11 @@ export function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Search Modal */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 lg:hidden"
-          >
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSearchOpen(false)} />
-            <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative bg-white dark:bg-zinc-900 shadow-xl"
-            >
-              <div className="flex items-center gap-3 p-4">
-                <Search className="h-5 w-5 text-zinc-400 shrink-0" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  autoFocus
-                  className="flex-1 bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none text-base"
-                />
-                <button
-                  onClick={() => setSearchOpen(false)}
-                  className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  <X className="h-5 w-5 text-zinc-400" />
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Search Modal (mobile) */}
+      <SearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+      />
     </>
   )
 }

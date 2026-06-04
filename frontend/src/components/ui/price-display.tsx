@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn, formatPrice } from '@/lib/utils'
 
 interface PriceDisplayProps {
   price: number
@@ -34,7 +34,7 @@ export function PriceDisplay({
               sizeStyles[size].price
             )}
           >
-            ${discountPrice?.toFixed(2)}
+            {formatPrice(discountPrice!)}
           </span>
           <span
             className={cn(
@@ -42,7 +42,7 @@ export function PriceDisplay({
               sizeStyles[size].discount
             )}
           >
-            ${price.toFixed(2)}
+            {formatPrice(price)}
           </span>
           <span
             className={cn(
@@ -60,7 +60,7 @@ export function PriceDisplay({
             sizeStyles[size].price
           )}
         >
-          ${price.toFixed(2)}
+          {formatPrice(price)}
         </span>
       )}
     </div>

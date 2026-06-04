@@ -30,7 +30,7 @@ export function TrendingProducts() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
-  const { data, isLoading } = useGetProductsQuery({ sortBy: '-sold', limit: 10 })
+  const { data, isLoading } = useGetProductsQuery({ sortBy: 'rating', limit: 10 })
   const trendingProducts = (data?.data ?? []).map(mapProduct)
 
   const scroll = (direction: 'left' | 'right') => {
