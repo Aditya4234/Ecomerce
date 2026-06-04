@@ -44,6 +44,14 @@ export function HeroSection() {
           animate="visible"
           className="max-w-3xl"
         >
+          <motion.div variants={itemVariants} className="mb-8 flex justify-center lg:justify-start">
+            <img
+              src="/image/logo.png"
+              alt="ShopVerse"
+              className="h-16 sm:h-20 w-auto object-contain"
+            />
+          </motion.div>
+
           <motion.div variants={itemVariants} className="mb-6">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-4 py-2 text-sm text-emerald-200 border border-emerald-400/20">
               <Sparkles className="h-4 w-4" />
