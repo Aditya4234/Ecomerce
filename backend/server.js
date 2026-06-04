@@ -75,6 +75,10 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/admin', adminRoutes);
 
+app.get('/', (req, res) => {
+  res.redirect('/api/health');
+});
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
