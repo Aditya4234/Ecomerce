@@ -40,13 +40,14 @@ const limiter = rateLimit({
 });
 
 app.use(helmet());
+const defaultOrigins = [
+  'http://localhost:3000',
+  'https://ecomerce-5tu8.vercel.app',
+  'https://ecomerce-2-txt0.onrender.com',
+];
 const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map((s) => s.trim())
-  : [
-      'http://localhost:3000',
-      'https://ecomerce-5tu8.vercel.app',
-      'https://ecomerce-2-txt0.onrender.com',
-    ];
+  ? [...new Set([...defaultOrigins, ...process.env.CLIENT_URL.split(',').map((s) => s.trim())])]
+  : defaultOrigins;
 
 app.use(cors({
   origin: (origin, callback) => {
