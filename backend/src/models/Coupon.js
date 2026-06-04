@@ -62,7 +62,6 @@ const couponSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-couponSchema.index({ code: 1 });
 couponSchema.index({ validFrom: 1, validTill: 1 });
 
 const Coupon = mongoose.model('Coupon', couponSchema);
