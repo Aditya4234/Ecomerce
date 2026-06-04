@@ -11,6 +11,7 @@ import {
   User,
   Menu,
   X,
+  Search,
   LogOut,
   LayoutDashboard,
   Package,
@@ -43,6 +44,8 @@ const navLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const pathname = usePathname()
 
   const dispatch = useDispatch<AppDispatch>()
@@ -111,8 +114,19 @@ export function Navbar() {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-2">
-              <SearchBar />
+            <div className="flex items-center gap-0.5 sm:gap-2">
+              <div className="hidden lg:block">
+                <SearchBar />
+              </div>
+
+              {/* Mobile Search */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="lg:hidden p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+                aria-label="Search"
+              >
+                <Search className="h-5 w-5" />
+              </button>
 
               <ThemeToggle />
 
@@ -301,6 +315,45 @@ export function Navbar() {
                     </Button>
                   </Link>
                 )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Search Modal */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 lg:hidden"
+          >
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSearchOpen(false)} />
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="relative bg-white dark:bg-zinc-900 shadow-xl"
+            >
+              <div className="flex items-center gap-3 p-4">
+                <Search className="h-5 w-5 text-zinc-400 shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  autoFocus
+                  className="flex-1 bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none text-base"
+                />
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  <X className="h-5 w-5 text-zinc-400" />
+                </button>
               </div>
             </motion.div>
           </motion.div>

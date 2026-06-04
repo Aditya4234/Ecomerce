@@ -159,7 +159,7 @@ export default function ProductsPage() {
             <div className="flex-1 min-w-0">
               <Skeleton variant="rectangular" className="h-11 w-full mb-6" />
               <Skeleton variant="rectangular" className="h-5 w-48 mb-4" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
                     <Skeleton variant="rectangular" className="aspect-square w-full" />
@@ -337,7 +337,7 @@ export default function ProductsPage() {
               <div
                 className={
                   viewMode === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6"
+                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"
                     : "space-y-4"
                 }
               >

@@ -42,6 +42,8 @@ export function ProductGrid({
     columns.md === 2 && 'md:grid-cols-2',
     columns.md === 3 && 'md:grid-cols-3',
     columns.md === 4 && 'md:grid-cols-4',
+    columns.md === 5 && 'md:grid-cols-5',
+    columns.md === 6 && 'md:grid-cols-6',
     columns.lg === 2 && 'lg:grid-cols-2',
     columns.lg === 3 && 'lg:grid-cols-3',
     columns.lg === 4 && 'lg:grid-cols-4',

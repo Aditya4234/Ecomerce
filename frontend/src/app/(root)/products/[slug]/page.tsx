@@ -495,7 +495,7 @@ export default function ProductDetailPage() {
           <h2 className="text-2xl font-bold text-foreground mb-6">
             Related Products
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {relatedProducts.map((rp) => (
               <Link key={rp._id} href={`/products/${rp.slug}`}>
                 <div className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-all duration-300">
