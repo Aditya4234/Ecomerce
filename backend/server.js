@@ -42,7 +42,11 @@ const limiter = rateLimit({
 app.use(helmet());
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map((s) => s.trim())
-  : ['http://localhost:3000'];
+  : [
+      'http://localhost:3000',
+      'https://ecomerce-5tu8.vercel.app',
+      'https://ecomerce-2-txt0.onrender.com',
+    ];
 
 app.use(cors({
   origin: (origin, callback) => {
